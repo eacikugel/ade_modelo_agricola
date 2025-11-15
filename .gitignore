@@ -22,11 +22,11 @@ __pycache__/
 *.swo
 *~
 
-# Archivos de datos grandes (opcional - descomenta si no quieres subir datos)
-# data/*.tif
-# data/*.npy
-# data/*.pkl
-# data/*.csv
+# Archivos de datos grandes
+data/**/*.npy
+data/**/*.pkl
+# data/*.tif  # Descomenta si no quieres subir imágenes
+# data/*.csv  # Descomenta si no quieres subir CSVs
 
 # Archivos temporales
 *.tmp
