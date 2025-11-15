@@ -1,4 +1,4 @@
-# Modelo Agrícola ADE
+# Modelo Agrícola, Análisis de Datos Espaciales, UNSAM 2C2025 
 
 Proyecto de análisis y procesamiento de imágenes satelitales para la identificación y etiquetado de segmentos agrícolas.
 
@@ -43,22 +43,12 @@ pip install -r requirements.txt
 ade_modelo_agricola/
 ├── data/                    # Datos de entrada y salida
 │   ├── dataframe_region_stats.csv
-│   ├── labels_ws.npy
-│   └── segmentos_etiquetados.tif
+│   ├── ...
 ├── scripts/
 │   └── final.ipynb         # Notebook principal con el análisis
 ├── requirements.txt        # Dependencias del proyecto
 └── README.md              # Este archivo
 ```
-
-## Uso
-
-Abre el notebook `scripts/final.ipynb` en Jupyter para ejecutar el análisis:
-
-```bash
-jupyter notebook scripts/final.ipynb
-```
-
 ## Dependencias Principales
 
 - `numpy>=1.21.0` - Operaciones numéricas
@@ -66,17 +56,3 @@ jupyter notebook scripts/final.ipynb
 - `matplotlib>=3.5.0` - Visualización
 - `scipy>=1.7.0` - Operaciones científicas
 - `scikit-image>=0.18.0` - Procesamiento de imágenes
-
-## Notas
-
-- Asegúrate de tener los archivos de datos necesarios en la carpeta `data/`
-- Los paths en el notebook pueden necesitar ajustarse según tu configuración local
-
-## Licencia
-
-[Especifica tu licencia aquí]
-
-## Autores
-
-[Agrega los nombres de los colaboradores]
-
