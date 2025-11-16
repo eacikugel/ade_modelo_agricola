@@ -1,0 +1,4 @@
+archivo,crs,width,height,res_width,res_height,nodata,dtype,count
+5_NDVI_combinado.tif,EPSG:32721,2890,2897,10.0,10.0,,float32,17
+recorte_invierno_GTiff.tif,EPSG:32721,2890,2897,10.0,10.0,-9999.0,float32,1
+recorte_verano_GTiff.tif,EPSG:32721,2890,2897,10.0,10.0,-9999.0,float32,1

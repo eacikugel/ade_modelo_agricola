@@ -1,0 +1,17 @@
+Banda 1: mediana
+Banda 2: min
+Banda 3: max
+Banda 4: sd
+Banda 5: NDVI_2023-06
+Banda 6: NDVI_2023-07
+Banda 7: NDVI_2023-08
+Banda 8: NDVI_2023-09
+Banda 9: NDVI_2023-10
+Banda 10: NDVI_2023-11
+Banda 11: NDVI_2023-12
+Banda 12: NDVI_2024-01
+Banda 13: NDVI_2024-02
+Banda 14: NDVI_2024-03
+Banda 15: NDVI_2024-04
+Banda 16: NDVI_2024-05
+Banda 17: NDVI_2024-06

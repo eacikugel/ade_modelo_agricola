@@ -1,0 +1,54 @@
+COMPARACION DE PARAMETROS DE RASTERS RECORTE
+================================================================================
+
+PROPIEDADES DE RECORTE_INVIERNO_GTIFF.TIF
+--------------------------------------------------------------------------------
+  archivo: recorte_invierno_GTiff.tif
+  ruta: E:\ade_modelo_agricola\data\proc\recorte_invierno_GTiff.tif
+  crs: EPSG:32721
+  width: 2890
+  height: 2897
+  nodata: -9999.0
+  dtype: float32
+  count: 1
+  res_width: 10.0
+  res_height: 10.0
+  transform: | 10.00, 0.00, 199060.00|
+| 0.00,-10.00, 5762170.00|
+| 0.00, 0.00, 1.00|
+  bounds: BoundingBox(left=199060.0, bottom=5733200.0, right=227960.0, top=5762170.0)
+
+PROPIEDADES DE RECORTE_VERANO_GTIFF.TIF
+--------------------------------------------------------------------------------
+  archivo: recorte_verano_GTiff.tif
+  ruta: E:\ade_modelo_agricola\data\proc\recorte_verano_GTiff.tif
+  crs: EPSG:32721
+  width: 2890
+  height: 2897
+  nodata: -9999.0
+  dtype: float32
+  count: 1
+  res_width: 10.0
+  res_height: 10.0
+  transform: | 10.00, 0.00, 199060.00|
+| 0.00,-10.00, 5762170.00|
+| 0.00, 0.00, 1.00|
+  bounds: BoundingBox(left=199060.0, bottom=5733200.0, right=227960.0, top=5762170.0)
+
+COMPARACION
+--------------------------------------------------------------------------------
+CRS: EPSG:32721 vs EPSG:32721 -> SI
+Width: 2890 vs 2890 -> SI
+Height: 2897 vs 2897 -> SI
+Resolucion Width: 10.0 vs 10.0 -> SI
+Resolucion Height: 10.0 vs 10.0 -> SI
+Nodata: -9999.0 vs -9999.0 -> SI
+Dtype: float32 vs float32 -> SI
+Count: 1 vs 1 -> SI
+
+Transform coincide: SI
+Bounds coincide: SI
+
+CONCLUSION
+--------------------------------------------------------------------------------
+Todos los parametros coinciden.
