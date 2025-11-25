@@ -17,6 +17,8 @@ __pycache__/
 
 # IDEs
 .vscode/
+AGENTS.md
+setup_github.ps1
 .idea/
 *.swp
 *.swo
