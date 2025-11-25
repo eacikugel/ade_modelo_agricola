@@ -34,6 +34,8 @@ from matplotlib.patches import Patch
 import matplotlib.patches as mpatches
 from graphviz import Digraph
 import xml.etree.ElementTree as ET
+from collections import defaultdict
+from scipy.ndimage import generic_filter
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -484,7 +486,6 @@ else:
 
 # %%
 # Evolucion temporal del NDVI agrupado por tipo de uso del suelo (Verano e Invierno)
-from collections import defaultdict
 
 raster_path_9 = os.path.join(DATA_PROC_DIR, "9_NDVI_con_recortes.tif")
 qml_path_inv = os.path.join(DATA_RAW_DIR, "INTA_23_24", "MNC_inv23.qml")
@@ -928,8 +929,6 @@ else:
 
 # %%
 # Visualizar predicciones en Coronel Suarez: Comparacion completa con post-procesamiento
-from scipy.ndimage import generic_filter
-
 # En el raster 20_predicciones_rf_coronel_suarez.tif:
 #   - Banda 1: realidad (INTA) ya agrupada en clases 0,1,2
 #   - Banda 2: prediccion del Random Forest (clases 0,1,2)
