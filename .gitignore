@@ -36,5 +36,6 @@ Thumbs.db
 
 # Archivos de salida
 *.tif
+*.pkl
 !data/*.tif  # Mantener los datos de ejemplo si los hay
 
