@@ -812,6 +812,9 @@ else:
 # 
 # 1. **Normalización**: Normaliza el mapa de predicción para procesamiento
 # 2. **Detección de bordes (Canny)**: Identifica los bordes entre diferentes clases usando el algoritmo de detección de bordes Canny
+#       * gradiente de la imagen
+#       * supresión no máxima
+#       * umbralización por histéresis        
 # 3. **Operaciones morfológicas**: Aplica cierre y apertura morfológica para limpiar y conectar regiones
 # 4. **Segmentación (Watershed)**: Utiliza el algoritmo Watershed para segmentar la imagen en regiones homogéneas
 # 5. **Remapeo de clases**: Para cada segmento identificado, asigna la clase mayoritaria dentro de ese segmento
@@ -1267,7 +1270,7 @@ except ImportError:
 #   - El modelo genera un raster de clusters (`11_NDVI_inta_verano_gmm_k3(n_ver).tif`) que segmenta el paisaje en tres tipos principales según su firma fenológica.
 # - **Análisis comparativo GMM vs INTA**:
 #   - En el notebook `mezcla_vs_inta.ipynb` comparamos los clusters GMM con las clases INTA mediante histogramas, PCA y tablas de contingencia.
-#   - Los resultados sugieren que los tres clusters se alinean de forma aproximada con las categorías “barbecho”, “agrícola” y “no agrícola”, aportando una segmentación no supervisada coherente con la clasificación oficial.
+#   - Según los resultados se logran identificar 3 grupos diferentes de datos, nosotros asumimos que se alinean con las categorías “barbecho”, “agrícola” y “no agrícola”, pero al graficar vimos que habia una mezcla entre lo que nosotros calsificamos como agricola y barbecho, esto ocurre por los diferentes niveles de NDVI que tienen los tipos de cultivo, hay varios que su NDVI es bajo y sulen confundirse con barbechos. La clasificacion que encuentra el modelo de mezcla es en realidad, "no agrícola", "agricola de alta densidad(NDVI)", "agricola de baja densidad(NDVI)"->dentro se encuentra barbecho.
 # - **Pasos futuros basados en este modelo de mezcla**:
 #   - Integrar el GMM como módulo de pre-clasificación o segmentación para reducir ruido y definir unidades relativamente homogéneas antes del modelo supervisado.
 #   - Ajustar el número de clusters (`k`) y evaluar si una segmentación más fina ayuda a distinguir subtipos de cultivos dentro de la clase agrícola.
