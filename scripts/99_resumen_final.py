@@ -58,7 +58,7 @@ print(f"  Directorio de datos raw: {DATA_RAW_DIR}")
 # - **12 imágenes NDVI mensuales**: Junio 2023 - Junio 2024 (día 1 de cada mes) para capturar la variabilidad temporal
 # - **1 imagen Sentinel-2 completa**: 13 bandas del 1 de enero de 2024 para análisis espectral
 # - **Área de estudio**: Tres Arroyos, Buenos Aires, Argentina (buffer de 14 km alrededor del punto central)
-# - **Proyección**: UTM Zone 21S (EPSG:32721) para asegurar consistencia espacial en todas las imágenes
+# - **Proyección**: fijamos las imagenes en UTM Zone 21S (EPSG:32721) para mantener una consistencia espacial
 # 
 # ### Script que Utilizamos
 # 
@@ -766,12 +766,52 @@ if os.path.exists(prediccion_path) and os.path.exists(raster_caracteristicas):
         
         # Calcular accuracy
         mask_comparacion = (realidad_agrupada >= 0) & (prediccion >= 0)
-        aciertos = (realidad_agrupada[mask_comparacion] == prediccion[mask_comparacion]).sum()
-        total = mask_comparacion.sum()
+        y_true = realidad_agrupada[mask_comparacion].ravel()
+        y_pred = prediccion[mask_comparacion].ravel()
+        aciertos = (y_true == y_pred).sum()
+        total = y_true.size
         accuracy = aciertos / total if total > 0 else 0
         
         print(f"Accuracy espacial: {accuracy:.4f} ({accuracy*100:.2f}%)")
         print(f"Pixeles correctos: {aciertos:,} de {total:,}")
+
+        # Matriz de confusion (filas = realidad, columnas = prediccion)
+        clases = [0, 1, 2]  # 0: Cultivo agricola, 1: Barbecho, 2: No agricola
+        nombres_clases = ['CULTIVO AGRICOLA', 'BARBECHO', 'NO AGRICOLA']
+        n_clases = len(clases)
+        matriz_confusion = np.zeros((n_clases, n_clases), dtype=np.int64)
+
+        for i, c_real in enumerate(clases):
+            for j, c_pred in enumerate(clases):
+                matriz_confusion[i, j] = np.sum((y_true == c_real) & (y_pred == c_pred))
+
+        print("\nMatriz de confusion (filas = realidad, columnas = prediccion):")
+        print("          " + "  ".join([f"{nc:>16}" for nc in nombres_clases]))
+        for i, nc_real in enumerate(nombres_clases):
+            fila_valores = "  ".join([f"{matriz_confusion[i, j]:16d}" for j in range(n_clases)])
+            print(f"{nc_real:16}  {fila_valores}")
+
+        # Visualizacion grafica de la matriz de confusion
+        fig_cm, ax_cm = plt.subplots(1, 1, figsize=(7, 6))
+        im_cm = ax_cm.imshow(matriz_confusion, cmap='Blues')
+
+        for i in range(n_clases):
+            for j in range(n_clases):
+                ax_cm.text(
+                    j, i, f"{matriz_confusion[i, j]:,}",
+                    ha='center', va='center', color='black', fontsize=10
+                )
+
+        ax_cm.set_xticks(range(n_clases))
+        ax_cm.set_xticklabels(nombres_clases, rotation=45, ha='right')
+        ax_cm.set_yticks(range(n_clases))
+        ax_cm.set_yticklabels(nombres_clases)
+        ax_cm.set_xlabel("Prediccion", fontsize=12)
+        ax_cm.set_ylabel("Realidad", fontsize=12)
+        ax_cm.set_title("Matriz de confusion - Tres Arroyos", fontsize=14, fontweight='bold')
+        plt.colorbar(im_cm, ax=ax_cm, fraction=0.046, pad=0.04)
+        plt.tight_layout()
+        plt.show()
 else:
     print("Archivos de prediccion no encontrados")
 
@@ -1089,46 +1129,6 @@ if os.path.exists(prediccion_cs):
         plt.tight_layout(rect=[0, 0.08, 1, 0.9])
         plt.subplots_adjust(bottom=0.08)
         plt.show()
-        
-        # Calcular accuracy para cada version
-        print("\n" + "="*80)
-        print("METRICAS DE ACCURACY POR VERSION")
-        print("="*80)
-        
-        mask_base = (realidad_agrupada >= 0) & (prediccion_orig >= 0)
-        
-        # Accuracy Original
-        aciertos_orig = (realidad_agrupada[mask_base] == prediccion_orig[mask_base]).sum()
-        total_orig = mask_base.sum()
-        accuracy_orig = aciertos_orig / total_orig if total_orig > 0 else 0
-        print(f"\nPrediccion Original:")
-        print(f"  Accuracy: {accuracy_orig:.4f} ({accuracy_orig*100:.2f}%)")
-        print(f"  Pixeles correctos: {aciertos_orig:,} de {total_orig:,}")
-        
-        # Accuracy MWM
-        mask_mwm = (realidad_agrupada >= 0) & (prediccion_mwm >= 0)
-        aciertos_mwm = (realidad_agrupada[mask_mwm] == prediccion_mwm[mask_mwm]).sum()
-        total_mwm = mask_mwm.sum()
-        accuracy_mwm = aciertos_mwm / total_mwm if total_mwm > 0 else 0
-        print(f"\nPrediccion MWM (Moving Window 3x3):")
-        print(f"  Accuracy: {accuracy_mwm:.4f} ({accuracy_mwm*100:.2f}%)")
-        print(f"  Pixeles correctos: {aciertos_mwm:,} de {total_mwm:,}")
-        print(f"  Mejora vs Original: {accuracy_mwm - accuracy_orig:+.4f} ({(accuracy_mwm - accuracy_orig)*100:+.2f}%)")
-        
-        # Accuracy CEWS
-        if tiene_cews:
-            mask_cews = (realidad_agrupada >= 0) & (prediccion_cews >= 0)
-            aciertos_cews = (realidad_agrupada[mask_cews] == prediccion_cews[mask_cews]).sum()
-            total_cews = mask_cews.sum()
-            accuracy_cews = aciertos_cews / total_cews if total_cews > 0 else 0
-            print(f"\nPrediccion CEWS:")
-            print(f"  Accuracy: {accuracy_cews:.4f} ({accuracy_cews*100:.2f}%)")
-            print(f"  Pixeles correctos: {aciertos_cews:,} de {total_cews:,}")
-            print(f"  Mejora vs Original: {accuracy_cews - accuracy_orig:+.4f} ({(accuracy_cews - accuracy_orig)*100:+.2f}%)")
-        else:
-            print(f"\nPrediccion CEWS: No disponible")
-        
-        print("\n" + "="*80)
 else:
     print("Archivos de Coronel Suarez no encontrados")
 
@@ -1216,7 +1216,7 @@ except ImportError:
     output_path = os.path.join(PROJECT_ROOT, "output_pipeline")
     dot.render(output_path, cleanup=True)
     print(f"Diagrama del pipeline guardado en: {output_path}.png")
-
+# %% [markdown]
 # ### Archivos Principales que Generamos
 # 
 # - `5_NDVI_combinado.tif`: Raster combinado de todas las imágenes NDVI mensuales
@@ -1277,3 +1277,5 @@ except ImportError:
 #   - Extender el análisis a Coronel Suárez y a otras regiones para evaluar si la estructura de clusters se mantiene estable espacialmente.
 #   - Explorar esquemas híbridos donde el GMM aporte información adicional (cluster ID, probabilidades de pertenencia) como features para modelos supervisados más complejos.
 #
+
+# %%
