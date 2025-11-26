@@ -851,10 +851,7 @@ else:
 # El algoritmo CEWS sigue estos pasos:
 # 
 # 1. **Normalización**: Normaliza el mapa de predicción para procesamiento
-# 2. **Detección de bordes (Canny)**: Identifica los bordes entre diferentes clases usando el algoritmo de detección de bordes Canny
-#       * gradiente de la imagen
-#       * supresión no máxima
-#       * umbralización por histéresis        
+# 2. **Detección de bordes (Canny)**: Identifica los bordes entre diferentes clases usando el algoritmo de detección de bordes Canny   
 # 3. **Operaciones morfológicas**: Aplica cierre y apertura morfológica para limpiar y conectar regiones
 # 4. **Segmentación (Watershed)**: Utiliza el algoritmo Watershed para segmentar la imagen en regiones homogéneas
 # 5. **Remapeo de clases**: Para cada segmento identificado, asigna la clase mayoritaria dentro de ese segmento
@@ -1239,28 +1236,6 @@ except ImportError:
 #   - **CEWS**: Segmentación avanzada que preserva mejor los bordes reales entre clases
 #   - Análisis comparativo en Coronel Suárez muestra el impacto de ambas técnicas en accuracy y coherencia visual
 # 
-# ### Consideraciones Técnicas Importantes que Tuvimos en Cuenta
-# 
-# 1. **Autocorrelación espacial**: Implementamos validación por bloques espaciales para evitar sobreestimación del rendimiento
-# 2. **Procesamiento optimizado**: Usamos procesamiento por ventanas para manejar rasters grandes sin saturar la memoria
-# 3. **Proyección consistente**: Mantuvimos UTM Zone 21S en todas las imágenes para asegurar alineación espacial correcta
-# 4. **Datos multitemporales**: Las series temporales NDVI capturan patrones fenológicos que son clave para distinguir tipos de cultivos
-#
-# ### Principales dificultades y cómo las resolvimos
-#
-# - **Autocorrelación espacial en el entrenamiento y validación**: 
-#   - Problema: las métricas iniciales del modelo estaban sobreestimadas porque los píxeles de entrenamiento y test estaban demasiado cerca entre sí.
-#   - Solución: implementamos una validación espacial por bloques 3x3 tipo tablero de ajedrez, separando explícitamente las zonas de entrenamiento y test.
-# - **Manejo de grandes volúmenes de datos raster**: 
-#   - Problema: los rasters multibanda y multitemporales no eran manejables en memoria con lectura directa completa.
-#   - Solución: adoptamos lectura con `rasterio` usando resampling para visualización y procesamiento por ventanas para los pasos más pesados, reduciendo el uso de memoria.
-# - **Interpretación de la clase “Barbecho” en serie temporal**:
-#   - Problema: los píxeles etiquetados como barbecho cambiaban de uso entre estaciones, generando firmas NDVI difíciles de interpretar si se usaba todo el año completo.
-#   - Solución: restringimos el análisis y entrenamiento a la ventana de verano, donde las etiquetas INTA son más coherentes con el ciclo del cultivo que queremos modelar.
-# - **Ruido tipo “salt and pepper” en las predicciones por píxel**:
-#   - Problema: el mapa de predicciones presentaba píxeles aislados sin coherencia espacial, poco interpretables agronómicamente.
-#   - Solución: desarrollamos un filtro Moving Window 3x3 y un esquema CEWS (Canny + Watershed) que suavizan las predicciones preservando los bordes relevantes.
-#
 # ### Líneas de trabajo futuro y modelo de mezcla
 #
 # Además del esquema supervisado con Random Forest, exploramos un enfoque no supervisado basado en **modelos de mezcla Gaussiana (GMM)**, documentado en `scripts/modelo_mezcla/modelo_mezclak3.py` y en el notebook `scripts/modelo_mezcla/mezcla_vs_inta.ipynb`.
@@ -1275,7 +1250,6 @@ except ImportError:
 #   - Integrar el GMM como módulo de pre-clasificación o segmentación para reducir ruido y definir unidades relativamente homogéneas antes del modelo supervisado.
 #   - Ajustar el número de clusters (`k`) y evaluar si una segmentación más fina ayuda a distinguir subtipos de cultivos dentro de la clase agrícola.
 #   - Extender el análisis a Coronel Suárez y a otras regiones para evaluar si la estructura de clusters se mantiene estable espacialmente.
-#   - Explorar esquemas híbridos donde el GMM aporte información adicional (cluster ID, probabilidades de pertenencia) como features para modelos supervisados más complejos.
 #
 
 # %%
